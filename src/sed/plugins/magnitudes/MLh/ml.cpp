@@ -548,10 +548,11 @@ class MagnitudeProcessor_ML : public MagnitudeProcessor {
 
 
 		MagnitudeProcessor::Status computeMagnitude(
-			double amplitude,   // in milimeters per second
-			double period,      // in seconds
-			double delta,       // in degrees
-			double depth,       // in kilometers
+			double amplitude,        // in milimeters (default)
+			const std::string &unit,
+			double period,           // in seconds
+			double delta,            // in degrees
+			double depth,            // in kilometers
 			const DataModel::Origin *, const DataModel::SensorLocation *,
 			double &value) {
 			if ( delta < DELTA_MIN || delta > DELTA_MAX )

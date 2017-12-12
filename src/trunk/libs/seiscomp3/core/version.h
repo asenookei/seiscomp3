@@ -23,12 +23,12 @@ namespace Seiscomp {
 namespace Core {
 
 
-/* #if (SC_API_VERSION >= SC_API_VERSION_CHECK(11, 1, 0)) */
+/* #if (SC_API_VERSION >= SC_API_VERSION_CHECK(12, 0, 0)) */
 #define SC_API_VERSION_CHECK(major, minor, patch) ((major<<16)|(minor<<8)|(patch))
 
 
 /* SC_API_VERSION is (major << 16) + (minor << 8) + patch. */
-#define SC_API_VERSION 0x0B0100
+#define SC_API_VERSION 0x0C0000
 
 #define SC_API_VERSION_MAJOR(v) (v >> 16)
 #define SC_API_VERSION_MINOR(v) ((v >> 8) & 0xff)
@@ -38,10 +38,15 @@ namespace Core {
 /******************************************************************************
  API Changelog
  ******************************************************************************
+ "12.0.0"   0x0C0000
+   - Added Seiscomp::Util::UnitConverter
+   - Added unit to Seiscomp::Processing::MagnitudeProcessor::computeMagnitude
+   - Added Seiscomp::Processing::MagnitudeProcessor::Status enumeration InvalidAmplitudeUnit
+
  "11.1.0"   0x0B0100
    - Added Seiscomp::DataModel::StrongMotion::Rupture::_strike
    - Added Seiscomp::Gui::Map::StandardLegend
-
+ 
  "11.0.0"   0x0B0000
    - Remove dynamic type throw declarations from all methods as this is
      deprecated in current C++ standard

@@ -525,6 +525,7 @@ bool MagTool::computeStationMagnitude(const DataModel::Amplitude *ampl,
 
 		MagnitudeProcessor::Status status =
 			it->second->computeMagnitude(ampl->amplitude().value(),
+			                             ampl->unit(),
 			                             period, distance, depth,
 			                             origin, loc, mag);
 

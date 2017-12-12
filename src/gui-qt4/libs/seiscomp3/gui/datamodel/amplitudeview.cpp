@@ -2579,8 +2579,9 @@ RecordMarker* AmplitudeView::updatePhaseMarker(Seiscomp::Gui::RecordViewItem *it
 		double m;
 		Processing::MagnitudeProcessor::Status status;
 		status = label->magnitudeProcessor->computeMagnitude(
-		         res.amplitude.value, res.period, item->value(ITEM_DISTANCE_INDEX),
-		         _origin->depth(), _origin.get(), label->location, m);
+			res.amplitude.value, label->processor->unit(),
+			res.period, item->value(ITEM_DISTANCE_INDEX),
+			_origin->depth(), _origin.get(), label->location, m);
 		if ( status == Processing::MagnitudeProcessor::OK )
 			mag = m;
 		else
@@ -3168,8 +3169,9 @@ void AmplitudeView::addAmplitude(Gui::RecordViewItem *item,
 
 			Processing::MagnitudeProcessor::Status stat;
 			stat = label->magnitudeProcessor->computeMagnitude(
-			         amp->amplitude().value(), per, item->value(ITEM_DISTANCE_INDEX),
-			         _origin->depth(), _origin.get(), label->location, m);
+				amp->amplitude().value(), label->processor->unit(),
+				per, item->value(ITEM_DISTANCE_INDEX),
+				_origin->depth(), _origin.get(), label->location, m);
 			if ( stat == Processing::MagnitudeProcessor::OK )
 				marker->setMagnitude(m, QString());
 			else
@@ -5397,7 +5399,7 @@ void AmplitudeView::commit() {
 
 		Processing::MagnitudeProcessor::Status stat =
 			label->magnitudeProcessor->computeMagnitude(
-				amp->amplitude().value(), period,
+				amp->amplitude().value(), label->processor->unit(), period,
 				item->value(ITEM_DISTANCE_INDEX), _origin->depth(),
 				_origin.get(), label->location, magValue
 			);

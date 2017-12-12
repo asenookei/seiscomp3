@@ -56,6 +56,8 @@ class SC_SYSTEM_CLIENT_API MagnitudeProcessor : public Processor {
 				MetaDataRequired,
 				//! The epicentre is out of supported regions
 				EpicenterOutOfRegions,
+				//! The unit of the input amplitude was not understood
+				InvalidAmplitudeUnit,
 				//! The estimation of the Mw magnitude is not supported
 				MwEstimationNotSupported,
 				//! Unspecified error
@@ -69,6 +71,7 @@ class SC_SYSTEM_CLIENT_API MagnitudeProcessor : public Processor {
 				"period out of range",
 				"meta data required",
 				"epicenter out of regions",
+				"invalid amplitude unit",
 				"Mw estimation not supported",
 				"error"
 			)
@@ -115,6 +118,7 @@ class SC_SYSTEM_CLIENT_API MagnitudeProcessor : public Processor {
 		 * @param amplitude The amplitude value without unit. The unit is
 		 *                  implicitly defined by the requested amplitude
 		 *                  type.
+		 * @param unit The unit of the amplitude.
 		 * @param period The measured period of the amplitude in seconds.
 		 * @param delta The distance from the epicenter in degrees.
 		 * @param depth The depth of the hypocenter in kilometers.
@@ -123,8 +127,8 @@ class SC_SYSTEM_CLIENT_API MagnitudeProcessor : public Processor {
 		 * @param value The return value, the magnitude.
 		 * @return The status of the computation.
 		 */
-		virtual Status computeMagnitude(double amplitude, double period,
-		                                double delta, double depth,
+		virtual Status computeMagnitude(double amplitude, const std::string &unit,
+		                                double period, double delta, double depth,
 		                                const DataModel::Origin *hypocenter,
 		                                const DataModel::SensorLocation *receiver,
 		                                double &value) = 0;

@@ -2145,7 +2145,7 @@ MagnitudeView::computeStationMagnitudes(const string &magType,
 
 			Processing::MagnitudeProcessor::Status stat =
 				magProc->computeMagnitude(
-					amp->amplitude().value(), period,
+					amp->amplitude().value(), amp->unit(), period,
 					dist, _origin->depth(), _origin.get(), loc, magValue
 				);
 

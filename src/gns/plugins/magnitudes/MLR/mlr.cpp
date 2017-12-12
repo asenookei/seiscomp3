@@ -91,10 +91,11 @@ class Magnitude_MLR : public Processing::MagnitudeProcessor {
 		}
 
 		MagnitudeProcessor::Status computeMagnitude(
-		      double amplitude,   // in milimeters
-		      double period,      // in seconds
-		      double delta,       // in degrees
-		      double depth,       // in kilometers
+		      double amplitude,        // in milimeters (default)
+		      const std::string &unit,
+		      double period,           // in seconds
+		      double delta,            // in degrees
+		      double depth,            // in kilometers
 		      const DataModel::Origin *, const DataModel::SensorLocation *,
 		      double &value)
 		{
