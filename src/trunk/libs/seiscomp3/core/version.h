@@ -42,6 +42,7 @@ namespace Core {
    - Added Seiscomp::Util::UnitConverter
    - Added unit to Seiscomp::Processing::MagnitudeProcessor::computeMagnitude
    - Added Seiscomp::Processing::MagnitudeProcessor::Status enumeration InvalidAmplitudeUnit
+   - Added Seiscomp::Processing::AmplitudeProcessor::setEnvironment
 
  "11.1.0"   0x0B0100
    - Added Seiscomp::DataModel::StrongMotion::Rupture::_strike

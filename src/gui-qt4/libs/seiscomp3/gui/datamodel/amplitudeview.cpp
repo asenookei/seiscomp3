@@ -3148,8 +3148,10 @@ void AmplitudeView::addAmplitude(Gui::RecordViewItem *item,
 	AmplitudeRecordLabel *label = static_cast<AmplitudeRecordLabel*>(item->label());
 
 	// Store referencing pickID
-	if ( label->processor && pick )
+	if ( label->processor && pick ) {
 		label->processor->setReferencingPickID(pick->publicID());
+		label->processor->setPick(pick);
+	}
 
 	if ( amp ) {
 		AmplitudeViewMarker *marker;
@@ -3805,6 +3807,8 @@ RecordViewItem* AmplitudeView::addRawStream(const DataModel::SensorLocation *loc
 		label->processor->setHint(Processing::WaveformProcessor::Time, (double) _origin->time().value());
 	}
 	catch ( ... ) {}
+
+	label->processor->setEnvironment(_origin.get(), loc, label->processor->pick());
 
 	label->processor->computeTimeWindow();
 

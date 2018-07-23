@@ -18,6 +18,8 @@
 #include <seiscomp3/core/interfacefactory.h>
 #include <seiscomp3/processing/timewindowprocessor.h>
 #include <seiscomp3/math/filter/seismometers.h>
+#include <seiscomp3/datamodel/origin.h>
+#include <seiscomp3/datamodel/sensorlocation.h>
 #include <seiscomp3/client.h>
 #include <boost/function.hpp>
 
@@ -70,6 +72,14 @@ class SC_SYSTEM_CLIENT_API AmplitudeProcessor : public TimeWindowProcessor {
 			Math::SeismometerResponse::WoodAnderson::Config woodAndersonResponse;
 		};
 
+		struct Environment {
+			Environment();
+
+			const DataModel::Origin *hypocenter;
+			const DataModel::SensorLocation *receiver;
+			const DataModel::Pick *pick;
+		};
+
 		struct AmplitudeIndex {
 			double  index;
 			double  begin;
@@ -112,9 +122,9 @@ class SC_SYSTEM_CLIENT_API AmplitudeProcessor : public TimeWindowProcessor {
 	public:
 		//! C'tor
 		AmplitudeProcessor();
-		AmplitudeProcessor(const std::string& type);
-		AmplitudeProcessor(const Core::Time& trigger);
-		AmplitudeProcessor(const Core::Time& trigger, const std::string& type);
+		AmplitudeProcessor(const std::string &type);
+		AmplitudeProcessor(const Core::Time &trigger);
+		AmplitudeProcessor(const Core::Time &trigger, const std::string &type);
 
 		//! D'tor
 		~AmplitudeProcessor();
@@ -156,12 +166,28 @@ class SC_SYSTEM_CLIENT_API AmplitudeProcessor : public TimeWindowProcessor {
 		//! Returns the current configuration
 		const Config &config() const { return _config; }
 
+		/**
+		 * @brief Sets the environment for the amplitude processor. Basically
+		 *        it is the hypocenter, the receiver and the pick made. The
+		 *        pick time must correspond to the trigger time set.
+		 *        This method was added with API 12.
+		 * @param hypocenter The hypocenter
+		 * @param receiver The receiver
+		 * @param pick The pick
+		 */
+		virtual void setEnvironment(const DataModel::Origin *hypocenter,
+		                            const DataModel::SensorLocation *receiver,
+		                            const DataModel::Pick *pick);
+
 		//! Sets whether amplitude updates are enabled or not
 		void setUpdateEnabled(bool);
 		bool isUpdateEnabled() const;
 
 		void setReferencingPickID(const std::string&);
 		const std::string& referencingPickID() const;
+
+		void setPick(const DataModel::Pick *pick);
+		const DataModel::Pick *pick() const;
 
 
 	// ----------------------------------------------------------------------
@@ -215,7 +241,7 @@ class SC_SYSTEM_CLIENT_API AmplitudeProcessor : public TimeWindowProcessor {
 		virtual void reset();
 
 		//! This method has to be called when all configuration
-		//! settings has been set to calculate the timewindow
+		//! settings have been set to calculate the timewindow
 		void computeTimeWindow();
 
 		//! Sets up the amplitude processor. By default it reads whether
@@ -347,6 +373,7 @@ class SC_SYSTEM_CLIENT_API AmplitudeProcessor : public TimeWindowProcessor {
 
 		// config
 		Config           _config;
+		Environment      _environment;
 
 		std::string      _type;
 		std::string      _unit;
@@ -361,6 +388,14 @@ class SC_SYSTEM_CLIENT_API AmplitudeProcessor : public TimeWindowProcessor {
 	private:
 		PublishFunc _func;
 };
+
+
+inline AmplitudeProcessor::Environment::Environment()
+: hypocenter(NULL), receiver(NULL), pick(NULL) {}
+
+inline const DataModel::Pick *AmplitudeProcessor::pick() const {
+	return _environment.pick;
+}
 
 
 DEFINE_INTERFACE_FACTORY(AmplitudeProcessor);

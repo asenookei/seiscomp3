@@ -116,7 +116,20 @@ class SC_SYSTEM_CLIENT_API WaveformProcessor : public Processor {
 				//! the sampling frequencies of different channels do not match.
 				InvalidSamplingFreq,
 				//! No associated value yet (error code?)
-				Error
+				Error,
+				// -- The following enumerations were added with API 12 ---
+				//!  No distance hint set
+				MissingDistance,
+				//!  No depth hint set
+				MissingDepth,
+				//!  No time hint set
+				MissingTime,
+				//! No hypocenter (Origin) given
+				MissingHypocenter,
+				//! No receiver (SensorLocation) given
+				MissingReceiver,
+				//! No pick (Pick) given
+				MissingPick
 			),
 			ENAMES(
 				"waiting for data",
@@ -134,7 +147,13 @@ class SC_SYSTEM_CLIENT_API WaveformProcessor : public Processor {
 				"missing gain",
 				"missing response",
 				"invalid sampling frequency",
-				"error"
+				"error",
+				"missing distance hint",
+				"missing depth hint",
+				"missing time hint",
+				"missing hypocenter",
+				"missing receiver",
+				"missing pick"
 			)
 		);
 

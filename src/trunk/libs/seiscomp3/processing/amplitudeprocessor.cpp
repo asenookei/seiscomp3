@@ -111,6 +111,28 @@ AmplitudeProcessor::~AmplitudeProcessor() {}
 
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+void AmplitudeProcessor::setEnvironment(const DataModel::Origin *hypocenter,
+                                        const DataModel::SensorLocation *receiver,
+                                        const DataModel::Pick *pick) {
+	_environment.hypocenter = hypocenter;
+	_environment.receiver = receiver;
+	_environment.pick = pick;
+}
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+void AmplitudeProcessor::setPick(const DataModel::Pick *pick) {
+	_environment.pick = pick;
+}
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 void AmplitudeProcessor::setUpdateEnabled(bool e) {
 	_enableUpdates = e;
 }
@@ -419,7 +441,7 @@ void AmplitudeProcessor::process(const Record *record) {
 				if ( status() == LowSNR )
 					SEISCOMP_DEBUG("Amplitude %s computation for stream %s failed because of low SNR (%.2f < %.2f)",
 					              _type.c_str(), record->streamID().c_str(), res.snr, _config.snrMin);
-				else {
+				else if ( status() < Terminated ) {
 					SEISCOMP_DEBUG("Amplitude %s computation for stream %s failed -> abort",
 					              _type.c_str(), record->streamID().c_str());
 					setStatus(Error, 3);
@@ -778,6 +800,9 @@ void AmplitudeProcessor::setHint(ProcessingHint hint, double value) {
 			if ( (value < _config.minimumDepth) || (value > _config.maximumDepth) )
 				setStatus(DepthOutOfRange, value);
 			// To be defined
+			break;
+
+		default:
 			break;
 	}
 }
