@@ -18,13 +18,19 @@
 #include <seiscomp3/core/baseobject.h>
 #include <seiscomp3/core/interfacefactory.h>
 #include <seiscomp3/core/enumeration.h>
-#include <seiscomp3/datamodel/origin.h>
-#include <seiscomp3/datamodel/sensorlocation.h>
 #include <seiscomp3/processing/processor.h>
 #include <seiscomp3/client.h>
 
 
 namespace Seiscomp {
+
+namespace DataModel {
+
+class Amplitude;
+class Origin;
+class SensorLocation;
+
+}
 
 namespace Processing {
 
@@ -51,13 +57,22 @@ class SC_SYSTEM_CLIENT_API MagnitudeProcessor : public Processor {
 				DistanceOutOfRange,
 				//! Given period is out of range to continue processing
 				PeriodOutOfRange,
+				//! Given amplitude SNR is out of range to continue processing
+				SNROutOfRange,
 				//! Either the origin or the sensor location hasn't been set
 				//! in call to computeMagnitude
 				MetaDataRequired,
 				//! The epicentre is out of supported regions
 				EpicenterOutOfRegions,
+				//! The receiver is out of supported regions
+				ReceiverOutOfRegions,
+				//! The entire raypath does not lie entirely in the supported
+				//! regions
+				RayPathOutOfRegions,
 				//! The unit of the input amplitude was not understood
 				InvalidAmplitudeUnit,
+				//! The amplitude object was missing
+				MissingAmplitudeObject,
 				//! The estimation of the Mw magnitude is not supported
 				MwEstimationNotSupported,
 				//! Unspecified error
@@ -69,9 +84,13 @@ class SC_SYSTEM_CLIENT_API MagnitudeProcessor : public Processor {
 				"depth out of range",
 				"distance out of range",
 				"period out of range",
+				"signal-to-noise ratio out of range",
 				"meta data required",
 				"epicenter out of regions",
+				"receiver out of regions",
+				"ray path out of regions",
 				"invalid amplitude unit",
+				"missing amplitude object",
 				"Mw estimation not supported",
 				"error"
 			)
@@ -95,7 +114,7 @@ class SC_SYSTEM_CLIENT_API MagnitudeProcessor : public Processor {
 	// ----------------------------------------------------------------------
 	public:
 		//! Returns the type of magnitude to be calculated
-		const std::string& type() const;
+		const std::string &type() const;
 
 		//! Returns the type of the Mw estimation
 		//! The default implementation returns "Mw($type)"
@@ -115,22 +134,27 @@ class SC_SYSTEM_CLIENT_API MagnitudeProcessor : public Processor {
 		 * @brief Computes the magnitude from an amplitude. The method signature
 		 *        has changed with API version >= 11. Prior to that version,
 		 *        @hypocenter and @receiver were not present.
-		 * @param amplitude The amplitude value without unit. The unit is
-		 *                  implicitly defined by the requested amplitude
-		 *                  type.
+		 * @param amplitudeValue The amplitude value without unit. The unit is
+		                         implicitly defined by the requested amplitude
+		 *                       type.
 		 * @param unit The unit of the amplitude.
 		 * @param period The measured period of the amplitude in seconds.
+		 * @param snr The measured SNR of the amplitude.
 		 * @param delta The distance from the epicenter in degrees.
 		 * @param depth The depth of the hypocenter in kilometers.
 		 * @param hypocenter The optional origin which describes the hypocenter.
 		 * @param receiver The sensor location meta-data of the receiver.
+		 * @param amplitude The optional amplitude object from which the values
+		 *                  were extracted.
 		 * @param value The return value, the magnitude.
 		 * @return The status of the computation.
 		 */
-		virtual Status computeMagnitude(double amplitude, const std::string &unit,
-		                                double period, double delta, double depth,
+		virtual Status computeMagnitude(double amplitudeValue, const std::string &unit,
+		                                double period, double snr,
+		                                double delta, double depth,
 		                                const DataModel::Origin *hypocenter,
 		                                const DataModel::SensorLocation *receiver,
+		                                const DataModel::Amplitude *amplitude,
 		                                double &value) = 0;
 
 		/**

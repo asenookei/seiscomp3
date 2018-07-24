@@ -75,9 +75,9 @@ class SC_SYSTEM_CLIENT_API AmplitudeProcessor : public TimeWindowProcessor {
 		struct Environment {
 			Environment();
 
-			const DataModel::Origin *hypocenter;
+			const DataModel::Origin         *hypocenter;
 			const DataModel::SensorLocation *receiver;
-			const DataModel::Pick *pick;
+			const DataModel::Pick           *pick;
 		};
 
 		struct AmplitudeIndex {
@@ -244,7 +244,7 @@ class SC_SYSTEM_CLIENT_API AmplitudeProcessor : public TimeWindowProcessor {
 
 		//! This method has to be called when all configuration
 		//! settings have been set to calculate the timewindow
-		void computeTimeWindow();
+		virtual void computeTimeWindow();
 
 		//! Sets up the amplitude processor. By default it reads whether
 		//! to use response information or not.
@@ -254,8 +254,6 @@ class SC_SYSTEM_CLIENT_API AmplitudeProcessor : public TimeWindowProcessor {
 		//! the amplitude
 		//! Once a trigger has been set all succeeding calls will fail.
 		virtual void setTrigger(const Core::Time& trigger);
-
-		Core::Time trigger() const;
 
 		/**
 		 * @brief Allows to finalize an amplitude object as created by
@@ -268,6 +266,8 @@ class SC_SYSTEM_CLIENT_API AmplitudeProcessor : public TimeWindowProcessor {
 		 * @param amplitude The amplitude to be finalized
 		 */
 		virtual void finalizeAmplitude(DataModel::Amplitude *amplitude) const;
+
+		Core::Time trigger() const;
 
 		void setPublishFunction(const PublishFunc &func);
 

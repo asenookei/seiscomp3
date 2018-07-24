@@ -459,6 +459,9 @@ bool MagTool::computeStationMagnitude(const DataModel::Amplitude *ampl,
 	double period = 0;
 	try { period = ampl->period().value(); } catch ( ... ) {}
 
+	double snr = 0;
+	try { snr = ampl->snr(); } catch ( ... ) {}
+
 	Util::KeyValues *params = NULL;
 	std::string stationID = ampl->waveformID().networkCode() + "." +
 	                        ampl->waveformID().stationCode();
@@ -524,10 +527,9 @@ bool MagTool::computeStationMagnitude(const DataModel::Amplitude *ampl,
 		}
 
 		MagnitudeProcessor::Status status =
-			it->second->computeMagnitude(ampl->amplitude().value(),
-			                             ampl->unit(),
-			                             period, distance, depth,
-			                             origin, loc, mag);
+			it->second->computeMagnitude(ampValue, ampl->unit(),
+			                             period, snr, distance, depth,
+			                             origin, loc, ampl, mag);
 
 		if ( status != MagnitudeProcessor::OK )
 			continue;

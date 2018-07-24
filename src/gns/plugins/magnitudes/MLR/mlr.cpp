@@ -94,9 +94,12 @@ class Magnitude_MLR : public Processing::MagnitudeProcessor {
 		      double amplitude,        // in milimeters (default)
 		      const std::string &unit,
 		      double period,           // in seconds
+		      double snr,              // no unit
 		      double delta,            // in degrees
 		      double depth,            // in kilometers
-		      const DataModel::Origin *, const DataModel::SensorLocation *,
+		      const DataModel::Origin *,
+		      const DataModel::SensorLocation *,
+		      const DataModel::Amplitude *,
 		      double &value)
 		{
 			if ( delta < DELTA_MIN || delta > DELTA_MAX )

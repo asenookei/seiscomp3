@@ -2139,14 +2139,15 @@ MagnitudeView::computeStationMagnitudes(const string &magType,
 			}
 
 			double magValue;
-			double period;
+			double period = 0, snr = 0;
 
-			try { period = amp->period().value(); } catch ( ... ) { period = 0; }
+			try { period = amp->period().value(); } catch ( ... ) {}
+			try { snr = amp->snr(); } catch ( ... ) {}
 
 			Processing::MagnitudeProcessor::Status stat =
 				magProc->computeMagnitude(
-					amp->amplitude().value(), amp->unit(), period,
-					dist, _origin->depth(), _origin.get(), loc, magValue
+					amp->amplitude().value(), amp->unit(), period, snr,
+					dist, _origin->depth(), _origin.get(), loc, amp.get(), magValue
 				);
 
 			if ( stat != Processing::MagnitudeProcessor::OK ) {

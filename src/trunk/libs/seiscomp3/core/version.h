@@ -39,10 +39,14 @@ namespace Core {
  API Changelog
  ******************************************************************************
  "12.0.0"   0x0C0000
-   - Added Seiscomp::Util::UnitConverter
-   - Added unit to Seiscomp::Processing::MagnitudeProcessor::computeMagnitude
    - Added Seiscomp::Processing::MagnitudeProcessor::Status enumeration InvalidAmplitudeUnit
+   - Added Seiscomp::Processing::MagnitudeProcessor::Status enumeration ReceiverOutOfRegions
+   - Added Seiscomp::Processing::MagnitudeProcessor::Status enumeration RayPathOutOfRegions
+   - Added Seiscomp::Processing::MagnitudeProcessor::Status enumeration MissingAmplitudeObject
    - Added Seiscomp::Processing::AmplitudeProcessor::setEnvironment
+   - Added Seiscomp::Processing::AmplitudeProcessor::finalizeAmplitude
+   - Added unit to Seiscomp::Processing::MagnitudeProcessor::computeMagnitude
+   - Added amplitude to Seiscomp::Processing::MagnitudeProcessor::computeMagnitude
 
  "11.1.0"   0x0B0100
    - Added Seiscomp::DataModel::StrongMotion::Rupture::_strike

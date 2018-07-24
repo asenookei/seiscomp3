@@ -2575,24 +2575,69 @@ RecordMarker* AmplitudeView::updatePhaseMarker(Seiscomp::Gui::RecordViewItem *it
 	OPT(double) mag;
 	QString magError;
 
+	int slot = -1;
+	if ( res.component < Processing::WaveformProcessor::Horizontal )
+		slot = _componentMap[res.component];
+
+	// Create amplitude
+	WaveformStreamID s = item->streamID();
+	AmplitudePtr a = Amplitude::Create();
+
+	if ( res.component <= Processing::WaveformProcessor::SecondHorizontal )
+		a->setWaveformID(
+			WaveformStreamID(
+				s.networkCode(), s.stationCode(),
+				s.locationCode(), label->data.traces[res.component].channelCode, ""
+			)
+		);
+	else
+		a->setWaveformID(
+			WaveformStreamID(
+				s.networkCode(), s.stationCode(),
+				s.locationCode(), s.channelCode().substr(0,2), ""
+			)
+		);
+
+	a->setAmplitude(
+		RealQuantity(res.amplitude.value, Core::None,
+		             res.amplitude.lowerUncertainty,
+		             res.amplitude.upperUncertainty, Core::None)
+	);
+
+	if ( res.period > 0 ) a->setPeriod(RealQuantity(res.period));
+	if ( res.snr >= 0 ) a->setSnr(res.snr);
+	a->setType(label->processor->type());
+	a->setUnit(label->processor->unit());
+	a->setTimeWindow(
+		TimeWindow(res.time.reference, res.time.begin, res.time.end)
+	);
+	a->setPickID(label->processor->referencingPickID());
+	a->setFilterID(label->data.filterID);
+
+	a->setEvaluationMode(EvaluationMode(MANUAL));
+
+	CreationInfo ci;
+	ci.setAgencyID(SCApp->agencyID());
+	ci.setAuthor(SCApp->author());
+	ci.setCreationTime(Core::Time::GMT());
+	a->setCreationInfo(ci);
+
+	proc->finalizeAmplitude(a.get());
+
 	if ( label->magnitudeProcessor ) {
 		double m;
 		Processing::MagnitudeProcessor::Status status;
 		status = label->magnitudeProcessor->computeMagnitude(
 			res.amplitude.value, label->processor->unit(),
-			res.period, item->value(ITEM_DISTANCE_INDEX),
-			_origin->depth(), _origin.get(), label->location, m);
+			res.period, res.snr, item->value(ITEM_DISTANCE_INDEX),
+			_origin->depth(), _origin.get(), label->location, a.get(), m);
 		if ( status == Processing::MagnitudeProcessor::OK )
 			mag = m;
 		else
 			magError = status.toString();
 	}
 
-	int slot = -1;
-	if ( res.component < Processing::WaveformProcessor::Horizontal )
-		slot = _componentMap[res.component];
-
-	AmplitudeViewMarker *marker = (AmplitudeViewMarker*)widget->marker(text, true);
+	AmplitudeViewMarker *marker = (AmplitudeViewMarker*)widget->marker(proc->type().c_str(), true);
 	// Marker found?
 	if ( marker ) {
 		// Set the marker time to the new picked time
@@ -3164,16 +3209,16 @@ void AmplitudeView::addAmplitude(Gui::RecordViewItem *item,
 			marker->setSlot(item->mapComponentToSlot(*amp->waveformID().channelCode().rbegin()));
 
 		if ( label->magnitudeProcessor ) {
-			double m, per = -1;
+			double m, per = 0, snr = 0;
 
-			try { per = amp->period().value(); }
-			catch ( ... ) {}
+			try { per = amp->period().value(); } catch ( ... ) {}
+			try { snr = amp->snr(); } catch ( ... ) {}
 
 			Processing::MagnitudeProcessor::Status stat;
 			stat = label->magnitudeProcessor->computeMagnitude(
 				amp->amplitude().value(), label->processor->unit(),
-				per, item->value(ITEM_DISTANCE_INDEX),
-				_origin->depth(), _origin.get(), label->location, m);
+				per, snr, item->value(ITEM_DISTANCE_INDEX),
+				_origin->depth(), _origin.get(), label->location, amp, m);
 			if ( stat == Processing::MagnitudeProcessor::OK )
 				marker->setMagnitude(m, QString());
 			else
@@ -5397,15 +5442,16 @@ void AmplitudeView::commit() {
 		}
 
 		double magValue;
-		double period;
+		double period = 0, snr = 0;
 
-		try { period = amp->period().value(); } catch ( ... ) { period = 0; }
+		try { period = amp->period().value(); } catch ( ... ) {}
+		try { snr = amp->snr(); } catch ( ... ) {}
 
 		Processing::MagnitudeProcessor::Status stat =
 			label->magnitudeProcessor->computeMagnitude(
-				amp->amplitude().value(), label->processor->unit(), period,
+				amp->amplitude().value(), label->processor->unit(), period, snr,
 				item->value(ITEM_DISTANCE_INDEX), _origin->depth(),
-				_origin.get(), label->location, magValue
+				_origin.get(), label->location, amp.get(), magValue
 			);
 
 		if ( stat != Processing::MagnitudeProcessor::OK ) {

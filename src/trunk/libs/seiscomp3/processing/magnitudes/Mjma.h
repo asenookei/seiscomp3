@@ -28,9 +28,11 @@ class SC_SYSTEM_CLIENT_API MagnitudeProcessor_Mjma : public MagnitudeProcessor {
 		MagnitudeProcessor_Mjma();
 
 		Status computeMagnitude(double amplitude, const std::string &unit,
-		                        double period, double delta, double depth,
+		                        double period, double snr,
+		                        double delta, double depth,
 		                        const DataModel::Origin *hypocenter,
 		                        const DataModel::SensorLocation *receiver,
+		                        const DataModel::Amplitude *,
 		                        double &value);
 };
 

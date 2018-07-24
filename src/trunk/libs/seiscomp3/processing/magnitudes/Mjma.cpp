@@ -44,12 +44,10 @@ MagnitudeProcessor_Mjma::MagnitudeProcessor_Mjma()
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 MagnitudeProcessor::Status MagnitudeProcessor_Mjma::computeMagnitude(
-	double amplitude,
-	const std::string &unit,
-	double,
-	double delta,
-	double depth,
+	double amplitude, const std::string &unit,
+	double, double, double delta, double depth,
 	const DataModel::Origin *, const DataModel::SensorLocation *,
+	const DataModel::Amplitude *,
 	double &value) {
 	if ( delta < DELTA_MIN || delta > DELTA_MAX )
 		return DistanceOutOfRange;

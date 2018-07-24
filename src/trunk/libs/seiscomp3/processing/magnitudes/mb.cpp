@@ -40,10 +40,10 @@ MagnitudeProcessor_mb::MagnitudeProcessor_mb()
 MagnitudeProcessor::Status MagnitudeProcessor_mb::computeMagnitude(
 	double amplitude,
 	const std::string &unit,
-	double period,
-	double delta,
-	double depth,
+	double period, double snr,
+	double delta, double depth,
 	const DataModel::Origin *, const DataModel::SensorLocation *,
+	const DataModel::Amplitude *,
 	double &value) {
 	// Clip depth to 0
 	if ( depth < 0 ) depth = 0;

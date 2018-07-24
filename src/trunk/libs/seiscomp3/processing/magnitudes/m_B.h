@@ -30,9 +30,11 @@ class SC_SYSTEM_CLIENT_API MagnitudeProcessor_mB : public MagnitudeProcessor {
 		MagnitudeProcessor_mB(const std::string& type);
 
 		Status computeMagnitude(double amplitude, const std::string &unit,
-		                        double period, double delta, double depth,
+		                        double period, double snr,
+		                        double delta, double depth,
 		                        const DataModel::Origin *hypocenter,
 		                        const DataModel::SensorLocation *receiver,
+		                        const DataModel::Amplitude *,
 		                        double &value);
 
 		Status estimateMw(double magnitude, double &Mw_estimate,
