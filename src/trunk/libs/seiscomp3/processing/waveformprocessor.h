@@ -129,7 +129,17 @@ class SC_SYSTEM_CLIENT_API WaveformProcessor : public Processor {
 				//! No receiver (SensorLocation) given
 				MissingReceiver,
 				//! No pick (Pick) given
-				MissingPick
+				MissingPick,
+				//! Metadata is incomplete, e.g. a particualr stream attribute
+				//! is not set or empty
+				IncompleteMetadata,
+				//! The epicentre is out of supported regions
+				EpicenterOutOfRegions,
+				//! The receiver is out of supported regions
+				ReceiverOutOfRegions,
+				//! The entire raypath does not lie entirely in the supported
+				//! regions
+				RayPathOutOfRegions
 			),
 			ENAMES(
 				"waiting for data",
@@ -153,7 +163,11 @@ class SC_SYSTEM_CLIENT_API WaveformProcessor : public Processor {
 				"missing time hint",
 				"missing hypocenter",
 				"missing receiver",
-				"missing pick"
+				"missing pick",
+				"incomplete metadata",
+				"epicenter out of regions",
+				"receiver out of regions",
+				"ray path out of regions"
 			)
 		);
 
