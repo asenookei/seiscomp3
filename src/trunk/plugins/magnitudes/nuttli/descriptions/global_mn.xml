@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<seiscomp>
+	<plugin name="MN">
+		<extends>global</extends>
+		<description>
+		The MN plugin is designed to compute the Canadian Nuttli magnitude
+		according to the Geological Survey of Canada.
+		</description>
+		<configuration>
+			<group name="magnitudes">
+				<group name="MN">
+					<parameter name="region" type="path">
+						<description>
+						The path to the BNA file which defines the valid region
+						for the MN magnitude. Note that the entire path from
+						source to receiver must ly entirely within the polygon(s).
+						</description>
+					</parameter>
+				</group>
+			</group>
+		</configuration>
+	</plugin>
+	<binding name="MN" module="global">
+		<description>
+		</description>
+		<configuration>
+			<group name="amplitudes">
+				<group name="MN">
+					<parameter name="filter" type="string">
+						<description>
+						The configurable filter such that the V measurement is
+						made on a filtered trace. By default, filtering is not
+						enabled.
+
+						See https://docs.gempa.de/seiscomp3/current/base/filter-grammar.html
+						for how to specify the filter.
+						</description>
+					</parameter>
+				</group>
+			</group>
+		</configuration>
+	</binding>
+</seiscomp>
