@@ -2168,6 +2168,8 @@ MagnitudeView::computeStationMagnitudes(const string &magType,
 			staMag->setMagnitude(magValue);
 			staMag->setAmplitudeID(amp->publicID());
 
+			magProc->finalizeMagnitude(staMag.get());
+
 			_origin->add(staMag.get());
 
 			StationMagnitudeContributionPtr ref = new StationMagnitudeContribution;

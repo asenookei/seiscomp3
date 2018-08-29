@@ -5475,6 +5475,8 @@ void AmplitudeView::commit() {
 		staMag->setMagnitude(magValue);
 		staMag->setAmplitudeID(amp->publicID());
 
+		label->magnitudeProcessor->finalizeMagnitude(staMag.get());
+
 		_origin->add(staMag.get());
 
 		StationMagnitudeContributionPtr ref = new StationMagnitudeContribution;
