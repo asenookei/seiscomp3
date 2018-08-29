@@ -43,7 +43,9 @@ namespace Core {
    - Added Seiscomp::Processing::MagnitudeProcessor::Status enumeration ReceiverOutOfRegions
    - Added Seiscomp::Processing::MagnitudeProcessor::Status enumeration RayPathOutOfRegions
    - Added Seiscomp::Processing::MagnitudeProcessor::Status enumeration MissingAmplitudeObject
+   - Added Seiscomp::Processing::MagnitudeProcessor::finalizeMagnitude
    - Added Seiscomp::Processing::AmplitudeProcessor::setEnvironment
+   - Added Seiscomp::Processing::AmplitudeProcessor::environment
    - Added Seiscomp::Processing::AmplitudeProcessor::finalizeAmplitude
    - Added unit to Seiscomp::Processing::MagnitudeProcessor::computeMagnitude
    - Added amplitude to Seiscomp::Processing::MagnitudeProcessor::computeMagnitude
