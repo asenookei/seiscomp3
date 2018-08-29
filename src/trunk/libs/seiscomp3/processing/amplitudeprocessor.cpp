@@ -14,6 +14,7 @@
 
 #define SEISCOMP_COMPONENT AmplitudeProcessor
 
+#include <seiscomp3/datamodel/pick.h>
 #include <seiscomp3/processing/amplitudeprocessor.h>
 #include <seiscomp3/math/mean.h>
 #include <seiscomp3/math/filter/iirdifferentiate.h>
@@ -116,7 +117,7 @@ void AmplitudeProcessor::setEnvironment(const DataModel::Origin *hypocenter,
                                         const DataModel::Pick *pick) {
 	_environment.hypocenter = hypocenter;
 	_environment.receiver = receiver;
-	_environment.pick = pick;
+	setPick(pick);
 }
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
@@ -126,6 +127,8 @@ void AmplitudeProcessor::setEnvironment(const DataModel::Origin *hypocenter,
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 void AmplitudeProcessor::setPick(const DataModel::Pick *pick) {
 	_environment.pick = pick;
+	if ( pick )
+		setReferencingPickID(pick->publicID());
 }
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 

@@ -179,6 +179,8 @@ class SC_SYSTEM_CLIENT_API AmplitudeProcessor : public TimeWindowProcessor {
 		                            const DataModel::SensorLocation *receiver,
 		                            const DataModel::Pick *pick);
 
+		const Environment &environment() const { return _environment; }
+
 		//! Sets whether amplitude updates are enabled or not
 		void setUpdateEnabled(bool);
 		bool isUpdateEnabled() const;
@@ -255,7 +257,19 @@ class SC_SYSTEM_CLIENT_API AmplitudeProcessor : public TimeWindowProcessor {
 
 		Core::Time trigger() const;
 
-		void setPublishFunction(const PublishFunc& func);
+		/**
+		 * @brief Allows to finalize an amplitude object as created by
+		 *        client code.
+		 *
+		 * This method will usually be called right before the amplitude will
+		 * be stored or sent and inside the emit handler. It allows processors
+		 * to set specific attributes or to add comments.
+		 * The default implementation does nothing.
+		 * @param amplitude The amplitude to be finalized
+		 */
+		virtual void finalizeAmplitude(DataModel::Amplitude *amplitude) const;
+
+		void setPublishFunction(const PublishFunc &func);
 
 		//! Returns the computed noise offset
 		OPT(double) noiseOffset() const;
@@ -264,7 +278,7 @@ class SC_SYSTEM_CLIENT_API AmplitudeProcessor : public TimeWindowProcessor {
 		OPT(double) noiseAmplitude() const;
 
 		//! Returns the type of amplitude to be calculated
-		const std::string& type() const;
+		const std::string &type() const;
 
 		//! Returns the unit of amplitude to be calculated
 		const std::string& unit() const;
