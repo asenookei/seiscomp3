@@ -27,6 +27,7 @@ namespace Seiscomp {
 namespace DataModel {
 
 class Amplitude;
+class StationMagnitude;
 class Origin;
 class SensorLocation;
 
@@ -175,6 +176,18 @@ class SC_SYSTEM_CLIENT_API MagnitudeProcessor : public Processor {
 		//! out = a*val + b
 		//! where a = linearCorrection and b = constantCorrection
 		double correctMagnitude(double val) const;
+
+		/**
+		 * @brief Allows to finalize a magnitude object as created by
+		 *        client code.
+		 *
+		 * This method will usually be called right before the magnitude will
+		 * be stored or sent and inside the emit handler. It allows processors
+		 * to set specific attributes or to add comments.
+		 * The default implementation does nothing.
+		 * @param magnitude The magnitude to be finalized
+		 */
+		virtual void finalizeMagnitude(DataModel::StationMagnitude *magnitude) const;
 
 
 	private:
