@@ -94,6 +94,8 @@ class TestApp : public Client::Application {
 				return false;
 			}
 
+			EventPtr evt =  ep->eventCount() > 0 ? ep->event(0) : NULL;
+
 			AmplitudeMap originalAmplitudes;
 
 			// Load existing amplitudes and create a map from pickID to the
@@ -367,6 +369,20 @@ class TestApp : public Client::Application {
 			}
 
 			ep->add(origin.get());
+
+			if ( !evt )
+				evt = Event::Create();
+
+			evt->setPreferredOriginID(origin->publicID());
+			evt->setPreferredMagnitudeID("");
+			evt->setPreferredFocalMechanismID("");
+
+			while ( evt->originReferenceCount() > 0 )
+				evt->removeOriginReference(0);
+
+			evt->add(new OriginReference(origin->publicID()));
+
+			ep->add(evt.get());
 
 			SEISCOMP_DEBUG("Output result to " TEST_BUILD_DIR "/%s_test.xml", prefix);
 			ar.create((string(TEST_BUILD_DIR) + "/" + prefix + "_test.xml").c_str());
