@@ -283,13 +283,8 @@ bool MNAmplitude::setup(const Settings &settings) {
 OPT(double) MNAmplitude::getMinimumOnset(const PhaseOrVelocity *priorities,
                                          double lat0, double lon0, double depth,
                                          double lat1, double lon1, double dist) const {
-	// Compute time window based on epicenter and receiver
-	OPT(double) minimumOnset;
-
 	// Compute window start
 	for ( int i = 0; i < EPhaseOrVelocityQuantity; ++i ) {
-		double onset;
-
 		switch ( priorities[i] ) {
 			case PoV_Undefined:
 				// Force loop break
@@ -331,45 +326,46 @@ OPT(double) MNAmplitude::getMinimumOnset(const PhaseOrVelocity *priorities,
 
 					if ( !acceptAllArrivals ) {
 						try {
-							if ( pick->evaluationMode() != DataModel::MANUAL )
+							if ( pick->evaluationMode() != DataModel::MANUAL ) {
 								// We do not accept automatic picks
+								SEISCOMP_DEBUG("%s.%s.%s: arrival '%s' no accepted, origin evaluation  mode != manual",
+								               _networkCode.c_str(), _stationCode.c_str(), _locationCode.c_str(),
+								               arr->phase().code().c_str());
 								continue;
+							}
 						}
 						catch ( ... ) {}
 					}
 
 					// Phase and location matches, use it
-					minimumOnset = pick->time().value() - _environment.hypocenter->time().value();
-					break;
+					double onset = pick->time().value() - _environment.hypocenter->time().value();
+
+					SEISCOMP_DEBUG("%s.%s.%s: arrival '%s' accepted, onset = %f",
+					               _networkCode.c_str(), _stationCode.c_str(), _locationCode.c_str(),
+					               arr->phase().code().c_str(), onset);
+
+					return onset;
 				}
 
-				if ( !minimumOnset ) {
-					// No arrival found, compute the predicted arrival time
-					try {
-						TravelTime tt = _travelTimeTable->compute(priorities[i].toString(), lat0, lon0, depth, lat1, lon1, 1);
-						if ( !(tt.time < 0) )
-							minimumOnset = tt.time;
-					}
-					catch ( ... ) {}
+				// No arrival found, compute the predicted arrival time
+				try {
+					TravelTime tt = _travelTimeTable->compute(priorities[i].toString(), lat0, lon0, depth, lat1, lon1, 1);
+					if ( !(tt.time < 0) )
+						return tt.time;
 				}
+				catch ( ... ) {}
 				break;
 			}
 			case PoV_Vmin:
-				onset = Math::Geo::deg2km(dist) / _Vmin;
-				if ( !minimumOnset || *minimumOnset > onset )
-					minimumOnset = onset;
-				break;
+				return Math::Geo::deg2km(dist) / _Vmin;
 			case PoV_Vmax:
-				onset = Math::Geo::deg2km(dist) / _Vmax;
-				if ( !minimumOnset || *minimumOnset > onset )
-					minimumOnset = onset;
-				break;
+				return Math::Geo::deg2km(dist) / _Vmax;
 			default:
 				break;
 		}
 	}
 
-	return minimumOnset;
+	return Core::None;
 }
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
