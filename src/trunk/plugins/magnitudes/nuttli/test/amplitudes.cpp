@@ -361,6 +361,8 @@ class TestApp : public Client::Application {
 
 				stamag->setType(magProc->type());
 				stamag->setWaveformID(amp->waveformID());
+				stamag->setAmplitudeID(amp->publicID());
+				stamag->setOriginID(origin->publicID());
 
 				stamag->setMagnitude(mag);
 				magProc->finalizeMagnitude(stamag.get());
